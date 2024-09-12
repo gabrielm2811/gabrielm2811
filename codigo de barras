@@ -1,57 +1,22 @@
-
 #include <iostream>
-#include <string>
-
 using namespace std;
 
-// Função para verificar se o código possui exatamente 13 dígitos numéricos
-bool isValidEAN13(const string& code) {
-    if (code.length() != 13) {
-        return false;
-    }
-    for (char c : code) {
-        if (!isdigit(c)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 // Função para calcular o dígito verificador do código EAN-13
-int calculateCheckDigit(const string& code) {
-    int sum = 0;
-    for (int i = 0; i < 12; ++i) {
-        int digit = code[i] - '0'; // Converte o caractere para inteiro
-        if (i % 2 == 0) {
-            sum += digit; // Dígitos nas posições pares (0, 2, 4, ...) são somados diretamente
-        } else {
-            sum += digit * 3; // Dígitos nas posições ímpares (1, 3, 5, ...) são multiplicados por 3 antes de somar
-        }
-    }
-    // Calcula o dígito verificador
-    int checkDigit = (10 - (sum % 10)) % 10;
+int calculateCheckDigit(int d0, int d1, int d2, int d3, int d4, int d5, int d6, int d7, int d8, int d9, int d10, int d11) {
+    int sum = d0 + d2 + d4 + d6 + d8 + d10;          // Soma dos dígitos nas posições pares
+    sum += (d1 + d3 + d5 + d7 + d9 + d11) * 3;       // Soma dos dígitos nas posições ímpares multiplicados por 3
+    int checkDigit = (10 - (sum % 10)) % 10;          // Calcula o dígito verificador
     return checkDigit;
 }
 
 int main() {
-    string code;
+    int d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, providedCheckDigit;
+
+    cout << "Digite os 13 dígitos do código de barras EAN-13, separados por espaço: ";
+    cin >> d0 >> d1 >> d2 >> d3 >> d4 >> d5 >> d6 >> d7 >> d8 >> d9 >> d10 >> d11 >> providedCheckDigit;
     
-    cout << "Digite o código de barras EAN-13 (13 dígitos): ";
-    cin >> code;
-    
-    if (!isValidEAN13(code)) {
-        cout << "Código inválido. Certifique-se de que possui exatamente 13 dígitos numéricos." << endl;
-        return 1;
-    }
-    
-    // Obtém o dígito verificador calculado
-    int calculatedCheckDigit = calculateCheckDigit(code);
-    
-    // Obtém o dígito verificador fornecido no código
-    int providedCheckDigit = code[12] - '0'; // Converte o caractere para inteiro
-    
-    // Imprime o dígito verificador calculado
-    cout << "Dígito verificador calculado: " << calculatedCheckDigit << endl;
+    // Calcula o dígito verificador
+    int calculatedCheckDigit = calculateCheckDigit(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11);
     
     // Verifica se o dígito verificador está correto
     if (calculatedCheckDigit == providedCheckDigit) {
@@ -59,6 +24,5 @@ int main() {
     } else {
         cout << "Código de barras inválido!" << endl;
     }
-    
+
     return 0;
-}
